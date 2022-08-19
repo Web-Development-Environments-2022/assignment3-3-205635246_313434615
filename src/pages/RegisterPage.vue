@@ -181,10 +181,11 @@ export default {
     },
     async Register() {
       try {
+        console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
         const response = await this.axios.post(
           // "https://test-for-3-2.herokuapp.com/user/Register",
-          this.$root.store.server_domain + "/Register",
-
+          //this.$root.store.server_domain + "/register",
+          "http://localhost:3000/user/account/register",
           {
             username: this.form.username,
             password: this.form.password
@@ -198,12 +199,12 @@ export default {
       }
     },
     onRegister() {
-      // console.log("register method called");
+      console.log("register method called");
       this.$v.form.$touch();
       if (this.$v.form.$anyError) {
         return;
       }
-      // console.log("register method go");
+      console.log("register method go");
       this.Register();
     },
     onReset() {

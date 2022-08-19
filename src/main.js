@@ -6,6 +6,8 @@ import axios from "axios";
 import routes from "./routes";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
+import VueSplit from 'vue-split-panel'//hjhgjg
+Vue.use(VueSplit)
 const router = new VueRouter({
   routes,
 });

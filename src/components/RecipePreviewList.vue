@@ -13,6 +13,7 @@
 </template>
 
 <script>
+let previusRandom = []
 import RecipePreview from "./RecipePreview.vue";
 export default {
   name: "RecipePreviewList",
@@ -36,16 +37,19 @@ export default {
   methods: {
     async updateRecipes() {
       try {
-        const response = await this.axios.get(
-          this.$root.store.server_domain + "/recipes/random",
+        if (previusRandom.length === 0){
+          const response = await this.axios.get(
+          //this.$root.store.server_domain + "/recipes/random",
+            "http://localhost:3000/recipes/getRandomRecipes"
           // "https://test-for-3-2.herokuapp.com/recipes/random"
         );
+        previusRandom.push(...response.data);
+        }
 
-        // console.log(response);
-        const recipes = response.data.recipes;
+        //console.log(this.previusRandom);
         this.recipes = [];
-        this.recipes.push(...recipes);
-        // console.log(this.recipes);
+        //this.recipes.push(...response.data);
+        this.recipes.push(...previusRandom);
       } catch (error) {
         console.log(error);
       }

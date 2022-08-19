@@ -1,27 +1,48 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link :to="{ name: 'main' }">Vue Recipes</router-link>|
-      <router-link :to="{ name: 'search' }">Search</router-link>|
-      {{ !$root.store.username }}
-      <span v-if="!$root.store.username">
-        Guest:
-        <router-link :to="{ name: 'register' }">Register</router-link>|
-        <router-link :to="{ name: 'login' }">Login</router-link>|
-      </span>
-      <span v-else>
-        {{ $root.store.username }}: <button @click="Logout">Logout</button>|
-      </span>
-    </div>
+    <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar-brand :to="{ name: 'main' }">Home</b-navbar-brand>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item :to="{ name: 'search' }">Search</b-nav-item>
+          <b-nav-item :to="{ name: 'About' }">About</b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto" v-if="!$root.store.username">
+          <b-nav-item style="margin-right: 30px" disabled
+            ><a style="color: white">Hello, Guest</a></b-nav-item>
+          <b-nav-item :to="{ name: 'login', params: { status: 'nav' } }">Login</b-nav-item>
+          <b-nav-item :to="{ name: 'register' }">Register</b-nav-item>
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto" v-else>
+          <b-nav-item style="margin-right: 30px" disabled><a style="color: white">Hello, {{ $root.store.username }}!</a>
+          </b-nav-item>
+          <b-nav-item-dropdown right>
+            <template #button-content> private area </template>
+            <b-dropdown-item :to="{ name: 'Favorites' }">Favorite Recipes</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'MyRecipes' }">My Recipes</b-dropdown-item>
+            <b-dropdown-item :to="{ name: 'Family' }">My Family Recipes</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item :to="{ name: 'CreateRecipe' }">Create Recipe</b-nav-item>
+          <b-nav-item @click="Logout">Log Out</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
     <router-view />
   </div>
 </template>
+
 
 <script>
 export default {
   name: "App",
   methods: {
-    Logout() {
+    async Logout() {
+      //i added response and make function async.################
+          const response = await this.axios.post(
+          //this.$root.store.server_domain +"/Logout",
+          "http://localhost:3000/user/account/logout",
+          {}
+        );
       this.$root.store.logout();
       this.$root.toast("Logout", "User logged out successfully", "success");
 
