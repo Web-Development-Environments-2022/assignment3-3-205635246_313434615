@@ -11,6 +11,9 @@ Vue.use(VueSplit)
 const router = new VueRouter({
   routes,
 });
+/*cookies*/
+//import VueCookies from "vue-cookies";
+//axios.defaults.withCredentials = true;
 
 import Vuelidate from "vuelidate";
 import "bootstrap/dist/css/bootstrap.css";
@@ -65,6 +68,9 @@ axios.interceptors.response.use(
 );
 
 Vue.use(VueAxios, axios);
+
+/*cookies*/
+//Vue.use(VueCookies, {expire: '1d'})
 
 Vue.config.productionTip = false;
 

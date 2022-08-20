@@ -24,7 +24,14 @@ export default {
     title: {
       type: String,
       required: true
-    }
+    }, 
+    queryString: {
+      type: String,
+      required: true
+    },
+    isRandom: {
+      type: Boolean
+    },
   },
   data() {
     return {
@@ -36,20 +43,22 @@ export default {
   },
   methods: {
     async updateRecipes() {
+      console.log("this queryString!)()(!)" +this.queryString)
       try {
-        if (previusRandom.length === 0){
+        //if (previusRandom.length === 0 || !this.isRandom){
           const response = await this.axios.get(
           //this.$root.store.server_domain + "/recipes/random",
-            "http://localhost:3000/recipes/getRandomRecipes"
+          this.queryString /*,{withCredentials:true}*/
+            //"http://localhost:3000/recipes/getRandomRecipes"
           // "https://test-for-3-2.herokuapp.com/recipes/random"
         );
-        previusRandom.push(...response.data);
-        }
+       // previusRandom.push(...response.data);
+    // }
 
         //console.log(this.previusRandom);
         this.recipes = [];
-        //this.recipes.push(...response.data);
-        this.recipes.push(...previusRandom);
+        this.recipes.push(...response.data);
+        //this.recipes.push(...previusRandom);
       } catch (error) {
         console.log(error);
       }

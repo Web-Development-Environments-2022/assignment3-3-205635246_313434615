@@ -4,13 +4,19 @@
     <h1 class="title">Main Page</h1>
     <Split style="height: 500px;">
     <SplitArea :size="50">
-        <RecipePreviewList title="Randome Recipes" class="RandomRecipes center" />
+        <RecipePreviewList title="Random Recipes" 
+            queryString="http://localhost:3000/recipes/getRandomRecipes" 
+            isRandom
+              class="RandomRecipes center" />
     </SplitArea>
     <SplitArea :size="50">
         <router-link v-if="!$root.store.username" to="/login" tag="button">
         You need to Login to vue this</router-link>
         {{ !$root.store.username }}
-        <RecipePreviewList title="Last Viewed Recipes" :class="{
+        <RecipePreviewList title="Last Viewed Recipes" 
+              queryString="http://localhost:3000/recipes/getRandomRecipes"
+              isRandom
+               :class="{
           RandomRecipes: true,
           blur: !$root.store.username,
           center: true

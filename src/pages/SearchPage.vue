@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 class="title">Search recipe</h1>
-    <b-form @submit.prevent="onRegister" @reset.prevent="onReset">
+    <b-form @submit.prevent="onSearch" @reset.prevent="onReset">
       <b-form-group
         id="input-group-recipe-name"
         label-cols-sm="3"
@@ -78,66 +78,14 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
-      <b-form-group
-        id="input-group-Password"
-        label-cols-sm="3"
-        label="Password:"
-        label-for="password"
-      >
-        <b-form-input
-          id="password"
-          type="password"
-          v-model="$v.form.password.$model"
-          :state="validateState('password')"
-        ></b-form-input>
-        <b-form-invalid-feedback v-if="!$v.form.password.required">
-          Password is required
-        </b-form-invalid-feedback>
-        <b-form-text v-else-if="$v.form.password.$error" text-variant="info">
-          Your password should be <strong>strong</strong>. <br />
-          For that, your password should be also:
-        </b-form-text>
-        <b-form-invalid-feedback
-          v-if="$v.form.password.required && !$v.form.password.length"
-        >
-          Have length between 5-10 characters long
-        </b-form-invalid-feedback>
-      </b-form-group>
-
-      <b-form-group
-        id="input-group-confirmedPassword"
-        label-cols-sm="3"
-        label="Confirm Password:"
-        label-for="confirmedPassword"
-      >
-        <b-form-input
-          id="confirmedPassword"
-          type="password"
-          v-model="$v.form.confirmedPassword.$model"
-          :state="validateState('confirmedPassword')"
-        ></b-form-input>
-        <b-form-invalid-feedback v-if="!$v.form.confirmedPassword.required">
-          Password confirmation is required
-        </b-form-invalid-feedback>
-        <b-form-invalid-feedback
-          v-else-if="!$v.form.confirmedPassword.sameAsPassword"
-        >
-          The confirmed password is not equal to the original password
-        </b-form-invalid-feedback>
-      </b-form-group>
-
       <b-button type="reset" variant="danger">Reset</b-button>
       <b-button
         type="submit"
         variant="primary"
         style="width:250px;"
         class="ml-5 w-75"
-        >Register</b-button
+        >Search</b-button
       >
-      <div class="mt-2">
-        You have an account already?
-        <router-link to="login"> Log in here</router-link>
-      </div>
     </b-form>
     <b-alert
       class="mt-2"
@@ -179,8 +127,6 @@ export default {
         cuisine: null,
         diet: null,
         intolerance: null,
-        password: "",
-        confirmedPassword: "",
         email: "",
         submitError: undefined
       },
@@ -195,26 +141,12 @@ export default {
     form: {
       recipe_name: {
         required,
-        length: (u) => minLength(3)(u) && maxLength(8)(u),
+        length: (u) => minLength(3)(u),
         alpha
       },
-      cuisine: {
-        required
-      },
-      diet: {
-        required
-      },
-      intolerance:{
-        required
-      },
-      password: {
-        required,
-        length: (p) => minLength(5)(p) && maxLength(10)(p)
-      },
-      confirmedPassword: {
-        required,
-        sameAsPassword: sameAs("password")
-      }
+      cuisine: {},
+      diet: {},
+      intolerance:{},
     }
   },
   mounted() {
@@ -229,43 +161,54 @@ export default {
       const { $dirty, $error } = this.$v.form[param];
       return $dirty ? !$error : null;
     },
-    async Register() {
+    async Search() {
       try {
         //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
-        const response = await this.axios.post(
-          // "https://test-for-3-2.herokuapp.com/user/Register",
-          //this.$root.store.server_domain + "/register",
-          "http://localhost:3000/user/account/register",
+        let params = {}
+        params["name"] = this.form.recipe_name;
+        if (this.form.cuisine != null){
+          params["cuisine"] = this.form.cuisine;
+        }
+        if (this.form.diet != null){
+          params["diet"] = this.form.diet;
+        }
+        if (this.form.diet != null){
+          params["intolerance"] = this.form.intolerance;
+        }
+        //params["name"] = "pasta";
+        //params[this.selectedType] = this.searchValue
+        const response = await this.axios.get(
+          "http://localhost:3000/recipes/searchRecipe",
           {
-            username: this.form.username,
-            password: this.form.password
+            //'http://127.0.0.1:3000/recipes/searchRecipe
+            //?name=pasta&cuisine=Italian&diet=Gluten%20Free&intolerance=Egg&number_of_results=10'
+            params: params
           }
         );
-        this.$router.push("/login");
-        // console.log(response);
+        console.log(response);
       } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;
       }
     },
-    onRegister() {
-      console.log("register method called");
+    onSearch() {
+      console.log("search method called");
+      /*
       this.$v.form.$touch();
       if (this.$v.form.$anyError) {
+        console.log("Search error  !");
         return;
       }
-      console.log("register method go");
-      this.Register();
+      */
+      console.log("search method go");
+      this.Search();
     },
     onReset() {
       this.form = {
         recipe_name: "",
-        firstName: "",
-        lastName: "",
         cuisine: null,
-        password: "",
-        confirmedPassword: "",
-        email: ""
+        diet: null,
+        intolerance: null
       };
       this.$nextTick(() => {
         this.$v.$reset();
