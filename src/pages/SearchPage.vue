@@ -115,9 +115,7 @@
       <pre class="m-0"><strong>$v.form:</strong> {{ $v.form }}</pre>
     </b-card> -->
 
-     <RecipePreviewList v-if="showSearchResults" v-bind:sp="searchParamas" title="search results" 
-            queryString= "http://localhost:3000/recipes/searchRecipe"
-            queryParams = "sp"
+     <RecipePreviewList v-if="showSearchResults" :queryString="queryStringComposed" title="search results" 
              :needAddButton="true"
               class="RandomRecipes center" />
   </div>
@@ -168,6 +166,9 @@ export default {
       validated: false,
       showSearchResults: false,
       searchParamas: {},
+      searchParamasString: "",
+      queryStringComposed: "http://localhost:3000/recipes/searchRecipe",
+
       stam: "lalal"
     };
   },
@@ -208,22 +209,29 @@ export default {
       try {
         //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
         this.searchParamas["name"] = this.form.recipe_name;
+        console.log("this.form.recipe_name ="+this.form.recipe_name);
         console.log("this.form ="+this.form);
+        this.queryStringComposed += "?name="+this.form.recipe_name;
+        console.log("queryStringComposed ="+this.queryStringComposed);
 
         if (this.form.cuisine != null){
           this.searchParamas["cuisine"] = this.form.cuisine;
+          this.queryStringComposed += "&cuisine="+this.form.cuisine;
         }
         if (this.form.diet != null){
           this.searchParamas["diet"] = this.form.diet;
+          this.queryStringComposed += "&diet="+this.form.diet;
         }
         if (this.form.intolerance != null){
           this.searchParamas["intolerance"] = this.form.intolerance;
+          this.queryStringComposed += "&intolerance="+this.form.intolerance;
         }
         if (this.form.number_of_results != null){
           console.log("number_of_results"+ this.form.number_of_results)
           this.searchParamas["number_of_results"] = this.form.number_of_results;
+          this.queryStringComposed += "&number_of_results="+this.form.number_of_results;
         }
-          console.log("this.searchParamas"+ this.searchParamas)
+        this.searchParamasString =  this.searchParamasString+ "}";
 
         this.showSearchResults = true;
       } catch (err) {
