@@ -100,7 +100,15 @@
       <pre class="m-0"><strong>form:</strong> {{ form }}</pre>
       <pre class="m-0"><strong>$v.form:</strong> {{ $v.form }}</pre>
     </b-card> -->
+
+     <RecipePreviewList v-if="showSearchResults" title="search results" 
+            queryString= "http://localhost:3000/recipes/searchRecipe"
+            queryParams = "searchParamas"
+             :needAddButton="true"
+              class="RandomRecipes center" />
   </div>
+
+ 
 </template>
 
 <script>
@@ -115,6 +123,10 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
+
+
+import RecipePreviewList from "../components/RecipePreviewList";
+
 
 export default {
   name: "Search",
@@ -134,9 +146,16 @@ export default {
       diet: [{ value: null, text: "", disabled: true }],
       intolerance: [{ value: null, text: "", disabled: true }],
       errors: [],
-      validated: false
+      validated: false,
+      showSearchResults: false,
+      searchParamas: {}
     };
   },
+  
+  components: {
+    RecipePreviewList
+  },
+  
   validations: {
     form: {
       recipe_name: {
@@ -161,7 +180,7 @@ export default {
       const { $dirty, $error } = this.$v.form[param];
       return $dirty ? !$error : null;
     },
-    async Search() {
+    async SearchBackup() {
       try {
         //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
         let params = {}
@@ -186,6 +205,33 @@ export default {
           }
         );
         console.log(response);
+        this.showSearchResults = true;
+      } catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
+    },
+    async Search() {
+      try {
+        //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
+        this.searchParamas["name"] = this.form.recipe_name;
+        console.log("aaaaaaaa");
+        console.log("this.form ="+this.form);
+
+        if (this.form.cuisine != null){
+          console.log("bbbbbbbbbbb");
+          this.searchParamas["cuisine"] = this.form.cuisine;
+        }
+        if (this.form.diet != null){
+          console.log("cccccccc");
+          this.searchParamas["diet"] = this.form.diet;
+        }
+        if (this.form.diet != null){
+          console.log("ddddddddd");
+          this.searchParamas["intolerance"] = this.form.intolerance;
+        }
+
+        this.showSearchResults = true;
       } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;

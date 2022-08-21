@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true
     },
+    queryParams: {
+      type: String,
+      required: false
+    },
     isRandom: {
       type: Boolean,
       default: false
@@ -48,12 +52,17 @@ export default {
       console.log("this queryString!)()(!)" +this.queryString)
       try {
         ///if (previusRandom.length === 0){
-          const response = await this.axios.get(
-          //this.$root.store.server_domain + "/recipes/random",
+          let response;
+          if (this.queryParams){
+          response = await this.axios.get(
           this.queryString /*,{withCredentials:true}*/
-            //"http://localhost:3000/recipes/getRandomRecipes"
-          // "https://test-for-3-2.herokuapp.com/recipes/random"
-        );
+          , this.queryParams
+          );
+          } else {
+            response = await this.axios.get(
+            this.queryString /*,{withCredentials:true}*/
+            );
+          }
         //previusRandom.push(...response.data);
         //}
 
