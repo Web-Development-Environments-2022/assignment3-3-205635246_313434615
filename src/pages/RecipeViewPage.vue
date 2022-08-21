@@ -55,17 +55,13 @@ export default {
     try {
       let response;
       // response = this.$route.params.response;
-      console.log("BAAAAAAAAAAAA");
+      //console.log("RECIPE"+ this.$route.params.recipeP);
       console.log("this.$route.params.recipeId    " + this.$route.params.recipeId);
       try {
         response = await this.axios.get(
           // "https://test-for-3-2.herokuapp.com/recipes/info",
           //this.$root.store.server_domain + "/recipes/info",
-          "http://127.0.0.1:3000/recipes/"+ this.$route.params.recipeId/*,
-          {
-            params: { recipeID: "13" }
-            //params: { recipeID: this.$route.params.recipeId }
-          }*/
+          "http://127.0.0.1:3000/recipes/"+ this.$route.params.recipeId
         );
 
         // console.log("response.status", response.status);
@@ -80,7 +76,7 @@ export default {
       console.log("before analyzedInstructions");
       console.log("response = " +response);
       console.log("response.data = " +response.data);
-      console.log("response.data.recipe = " +response.data.recipe);
+      //console.log("response.data.recipe = " +response.data.recipe);
 
       let {
         analyzedInstructions,

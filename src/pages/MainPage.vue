@@ -14,7 +14,7 @@
         You need to Login to vue this</router-link>
         {{ !$root.store.username }}
         <RecipePreviewList title="Last Viewed Recipes" 
-              queryString="http://localhost:3000/recipes/getRandomRecipes"
+              queryString="http://127.0.0.1:3000/user/profile/getLastViewed"
               :needAddButton="true"
                :class="{
           RandomRecipes: true,

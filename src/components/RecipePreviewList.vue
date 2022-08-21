@@ -47,20 +47,20 @@ export default {
     async updateRecipes() {
       console.log("this queryString!)()(!)" +this.queryString)
       try {
-        if (previusRandom.length === 0){
+        ///if (previusRandom.length === 0){
           const response = await this.axios.get(
           //this.$root.store.server_domain + "/recipes/random",
           this.queryString /*,{withCredentials:true}*/
             //"http://localhost:3000/recipes/getRandomRecipes"
           // "https://test-for-3-2.herokuapp.com/recipes/random"
         );
-        previusRandom.push(...response.data);
-        }
+        //previusRandom.push(...response.data);
+        //}
 
         //console.log(this.previusRandom);
         this.recipes = [];
-        //this.recipes.push(...response.data);
-        this.recipes.push(...previusRandom);
+        this.recipes.push(...response.data);
+        //this.recipes.push(...previusRandom);
       }
       catch (error) {
         console.log(error);

@@ -1,7 +1,9 @@
+import Vue from "vue";
+
 <template>
     <div class="recipe-preview">
 
-    <router-link class="recipe-body"  :to="{ name: 'recipe', params: { recipeId: recipe.id } }">
+    <router-link @click.native="addToLastViewed(recipe.id)" class="recipe-body" :to="{ name: 'recipe', params: { recipeId: recipe.id} }">
     <div>
       <span @mouseover="hover = true" @mouseleave="hover = false">
         <img v-if="image_load" :src="recipe.image" class="recipe-image" />
@@ -38,6 +40,8 @@
 </template>
 
 <script>
+var last_watched = [];
+
 export default {
   computed:{
     buttonVisible(){
@@ -96,6 +100,16 @@ export default {
             }
         );
         this.needAddButton = false;
+      },
+      addToLastViewed: async function(recipeID){
+        console.log("in zubi zubi recipeID = " +recipeID);
+        const response = await this.axios.post(
+        "http://127.0.0.1:3000/user/profile/addLastViewed",
+        {
+          "recipeId": recipeID
+        }
+        );
+     
       }
     }
   };
