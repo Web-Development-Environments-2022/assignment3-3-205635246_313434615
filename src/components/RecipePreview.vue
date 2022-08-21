@@ -2,7 +2,14 @@
     <div class="recipe-preview">
 
     <router-link class="recipe-body"  :to="{ name: 'recipe', params: { recipeId: recipe.id } }">
-      <img v-if="image_load" :src="recipe.image" class="recipe-image" />
+    <div>
+      <span @mouseover="hover = true" @mouseleave="hover = false">
+        <img v-if="image_load" :src="recipe.image" class="recipe-image" />
+        <div v-if="hover" class="hover-text">
+          press for more...
+        </div>
+      </span>
+    </div>
     </router-link>
     
     <div class="recipe-footer" >
@@ -46,6 +53,7 @@ export default {
   data() {
     return {
       image_load: false,
+       hover: false
     };
   },
   props: {
@@ -116,11 +124,21 @@ export default {
   display: block;
   width: 98%;
   height: auto;
+  opacity: 1;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
 }
 
+.recipe-preview .recipe-body .hover-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  color: black;
+  font-size: 8pt;
+
+}
 .recipe-preview .recipe-footer {
   width: 100%;
   height: 50%;
@@ -169,9 +187,5 @@ export default {
   width: 90px;
   display: table-cell;
   text-align: center;
-}
-
-.recipe-preview.recipe-body:hover .recipe-preview.recipe-body {
-  opacity: 0.3;
 }
 </style>
