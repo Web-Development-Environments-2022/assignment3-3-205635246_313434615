@@ -78,6 +78,20 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+            <b-form-group
+        id="input-group-num-of-results"
+        label-cols-sm="3"
+        label="Number of results: "
+        label-for="results_num"
+      >
+        <b-form-select
+          id="results_num"
+          v-model="$v.form.results_num.$model"
+          :options="number_results"
+          :state="validateState('results_num')"
+        ></b-form-select>
+      </b-form-group>
+
       <b-button type="reset" variant="danger">Reset</b-button>
       <b-button
         type="submit"
@@ -139,12 +153,14 @@ export default {
         cuisine: null,
         diet: null,
         intolerance: null,
+        results_num: 5,
         email: "",
         submitError: undefined
       },
       cuisines: [{ value: null, text: "", disabled: true }],
       diet: [{ value: null, text: "", disabled: true }],
       intolerance: [{ value: null, text: "", disabled: true }],
+      results_num: [{ value: 5, text: "", disabled: true }],
       errors: [],
       validated: false,
       showSearchResults: false,
@@ -166,6 +182,7 @@ export default {
       cuisine: {},
       diet: {},
       intolerance:{},
+      results_num:{}
     }
   },
   mounted() {
@@ -173,6 +190,9 @@ export default {
     this.cuisines.push(...cuisines);
     this.diet.push(...diet);
     this.intolerance.push(...intolerance);
+    this.results_num.push(...results_num);
+
+
     // console.log($v);
   },
   methods: {
@@ -180,55 +200,23 @@ export default {
       const { $dirty, $error } = this.$v.form[param];
       return $dirty ? !$error : null;
     },
-    async SearchBackup() {
-      try {
-        //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
-        let params = {}
-        params["name"] = this.form.recipe_name;
-        if (this.form.cuisine != null){
-          params["cuisine"] = this.form.cuisine;
-        }
-        if (this.form.diet != null){
-          params["diet"] = this.form.diet;
-        }
-        if (this.form.diet != null){
-          params["intolerance"] = this.form.intolerance;
-        }
-        //params["name"] = "pasta";
-        //params[this.selectedType] = this.searchValue
-        const response = await this.axios.get(
-          "http://localhost:3000/recipes/searchRecipe",
-          {
-            //'http://127.0.0.1:3000/recipes/searchRecipe
-            //?name=pasta&cuisine=Italian&diet=Gluten%20Free&intolerance=Egg&number_of_results=10'
-            params: params
-          }
-        );
-        console.log(response);
-        this.showSearchResults = true;
-      } catch (err) {
-        console.log(err.response);
-        this.form.submitError = err.response.data.message;
-      }
-    },
     async Search() {
       try {
         //console.log("this.$root.store.server_domain : " + this.$root.store.server_domain);
         this.searchParamas["name"] = this.form.recipe_name;
-        console.log("aaaaaaaa");
         console.log("this.form ="+this.form);
 
         if (this.form.cuisine != null){
-          console.log("bbbbbbbbbbb");
           this.searchParamas["cuisine"] = this.form.cuisine;
         }
         if (this.form.diet != null){
-          console.log("cccccccc");
           this.searchParamas["diet"] = this.form.diet;
         }
-        if (this.form.diet != null){
-          console.log("ddddddddd");
+        if (this.form.intolerance != null){
           this.searchParamas["intolerance"] = this.form.intolerance;
+        }
+        if (this.form.results_num != null){
+          this.searchParamas["results_num"] = this.form.results_num;
         }
 
         this.showSearchResults = true;
@@ -238,15 +226,6 @@ export default {
       }
     },
     onSearch() {
-      console.log("search method called");
-      /*
-      this.$v.form.$touch();
-      if (this.$v.form.$anyError) {
-        console.log("Search error  !");
-        return;
-      }
-      */
-      console.log("search method go");
       this.Search();
     },
     onReset() {
