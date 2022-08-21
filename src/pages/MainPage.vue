@@ -6,7 +6,7 @@
     <SplitArea :size="50">
         <RecipePreviewList title="Random Recipes" 
             queryString="http://localhost:3000/recipes/getRandomRecipes" 
-            isRandom
+             :needAddButton="true"
               class="RandomRecipes center" />
     </SplitArea>
     <SplitArea :size="50">
@@ -15,7 +15,7 @@
         {{ !$root.store.username }}
         <RecipePreviewList title="Last Viewed Recipes" 
               queryString="http://localhost:3000/recipes/getRandomRecipes"
-              isRandom
+              :needAddButton="true"
                :class="{
           RandomRecipes: true,
           blur: !$root.store.username,

@@ -1,25 +1,43 @@
 <template>
-  <router-link
-    :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
-    class="recipe-preview"
-  >
-    <div class="recipe-body">
+    <div class="recipe-preview">
+
+    <router-link class="recipe-body"  :to="{ name: 'recipe', params: { recipeId: recipe.id } }">
       <img v-if="image_load" :src="recipe.image" class="recipe-image" />
-    </div>
-    <div class="recipe-footer">
+    </router-link>
+    
+    <div class="recipe-footer" >
       <div :title="recipe.title" class="recipe-title">
         {{ recipe.title }}
       </div>
       <ul class="recipe-overview">
         <li>{{ recipe.readyInMinutes }} minutes</li>
-        <li>{{ recipe.aggregateLikes }} likes</li>
+        <li>{{ recipe.popularity ? recipe.popularity : "0"}} likes</li>
+        <li>{{ recipe.vegan ? "vegan" : recipe.vegetarian ? "vegetarian" : ""}}</li>
+        <li>{{ recipe.glutenFree ? "gluten-free" :""}}</li>
+        
+        <li v-if="buttonVisible">
+          <button v-on:click="addToFavorite(recipe.id)">Add to favorate</button> </li>
+        
+          <!--
+        <li v-else>
+           <button id="f_b" hidden="true">Add to favorate</button> </li></li>
+           
+        <li>{{ needAddButton ? "need" : ""}}</li>
+        -->
       </ul>
-    </div>
-  </router-link>
+  </div>
+</div>
+
 </template>
 
 <script>
 export default {
+  computed:{
+    buttonVisible(){
+      return this.needAddButton;   
+    }
+  }
+  ,
   mounted() {
     this.axios.get(this.recipe.image).then((i) => {
       this.image_load = true;
@@ -27,14 +45,16 @@ export default {
   },
   data() {
     return {
-      image_load: false
+      image_load: false,
     };
   },
   props: {
     recipe: {
       type: Object,
       required: true
-    }
+    },
+    needAddButton: Boolean
+    },
 
     // id: {
     //   type: Number,
@@ -59,8 +79,19 @@ export default {
     //     return undefined;
     //   }
     // }
-  }
-};
+    methods:{
+      addToFavorite: async function(id){
+        const response = await this.axios.post(
+            "http://localhost:3000/user/profile/addFavoriteRecipe",
+            {
+              "recipeId": id
+            }
+        );
+        this.needAddButton = false;
+      }
+    }
+  };
+
 </script>
 
 <style scoped>
@@ -73,7 +104,7 @@ export default {
 }
 .recipe-preview > .recipe-body {
   width: 100%;
-  height: 200px;
+  height: 100%;
   position: relative;
 }
 
@@ -99,7 +130,7 @@ export default {
 .recipe-preview .recipe-footer .recipe-title {
   padding: 10px 10px;
   width: 100%;
-  font-size: 12pt;
+  font-size: 5pt;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -110,6 +141,7 @@ export default {
 .recipe-preview .recipe-footer ul.recipe-overview {
   padding: 5px 10px;
   width: 100%;
+  font-size:5pt;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -137,5 +169,9 @@ export default {
   width: 90px;
   display: table-cell;
   text-align: center;
+}
+
+.recipe-preview.recipe-body:hover .recipe-preview.recipe-body {
+  opacity: 0.3;
 }
 </style>

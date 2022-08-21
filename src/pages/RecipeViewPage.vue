@@ -2,7 +2,7 @@
   <div class="container">
     <div v-if="recipe">
       <div class="recipe-header mt-3 mb-4">
-        <h1>{{ recipe.title }}</h1>
+        <h1>{{ recipe.title }} dsdomocm</h1>
         <img :src="recipe.image" class="center" />
       </div>
       <div class="recipe-body">
@@ -11,6 +11,7 @@
             <div class="mb-3">
               <div>Ready in {{ recipe.readyInMinutes }} minutes</div>
               <div>Likes: {{ recipe.aggregateLikes }} likes</div>
+              <div>Servings: {{ recipe.servings }} people</div>
             </div>
             Ingredients:
             <ul>
@@ -42,6 +43,8 @@
 </template>
 
 <script>
+import { runInThisContext } from 'vm';
+
 export default {
   data() {
     return {
@@ -52,23 +55,32 @@ export default {
     try {
       let response;
       // response = this.$route.params.response;
-
+      console.log("BAAAAAAAAAAAA");
+      console.log("this.$route.params.recipeId    " + this.$route.params.recipeId);
       try {
         response = await this.axios.get(
           // "https://test-for-3-2.herokuapp.com/recipes/info",
-          this.$root.store.server_domain + "/recipes/info",
+          //this.$root.store.server_domain + "/recipes/info",
+          "http://127.0.0.1:3000/recipes/"+ this.$route.params.recipeId/*,
           {
-            params: { id: this.$route.params.recipeId }
-          }
+            params: { recipeID: "13" }
+            //params: { recipeID: this.$route.params.recipeId }
+          }*/
         );
 
         // console.log("response.status", response.status);
         if (response.status !== 200) this.$router.replace("/NotFound");
       } catch (error) {
+        console.log("BIBIBIBIBO");
         console.log("error.response.status", error.response.status);
         this.$router.replace("/NotFound");
         return;
       }
+
+      console.log("before analyzedInstructions");
+      console.log("response = " +response);
+      console.log("response.data = " +response.data);
+      console.log("response.data.recipe = " +response.data.recipe);
 
       let {
         analyzedInstructions,
@@ -76,9 +88,14 @@ export default {
         extendedIngredients,
         aggregateLikes,
         readyInMinutes,
+        servings,
         image,
         title
-      } = response.data.recipe;
+      //} = response.data.recipe;
+      } = response.data;
+
+      console.log("analyzedInstructions", analyzedInstructions);
+
 
       let _instructions = analyzedInstructions
         .map((fstep) => {
@@ -94,6 +111,7 @@ export default {
         extendedIngredients,
         aggregateLikes,
         readyInMinutes,
+        servings,
         image,
         title
       };
