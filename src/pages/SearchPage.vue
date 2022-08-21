@@ -82,13 +82,13 @@
         id="input-group-num-of-results"
         label-cols-sm="3"
         label="Number of results: "
-        label-for="results_num"
+        label-for="number_of_results"
       >
         <b-form-select
-          id="results_num"
-          v-model="$v.form.results_num.$model"
+          id="number_of_results"
+          v-model="$v.form.number_of_results.$model"
           :options="number_results"
-          :state="validateState('results_num')"
+          :state="validateState('number_of_results')"
         ></b-form-select>
       </b-form-group>
 
@@ -115,9 +115,9 @@
       <pre class="m-0"><strong>$v.form:</strong> {{ $v.form }}</pre>
     </b-card> -->
 
-     <RecipePreviewList v-if="showSearchResults" title="search results" 
+     <RecipePreviewList v-if="showSearchResults" v-bind:sp="searchParamas" title="search results" 
             queryString= "http://localhost:3000/recipes/searchRecipe"
-            queryParams = "searchParamas"
+            queryParams = "sp"
              :needAddButton="true"
               class="RandomRecipes center" />
   </div>
@@ -129,6 +129,9 @@
 import cuisines from "../assets/cuisines";
 import diet from "../assets/diet";
 import intolerance from "../assets/intolerance";
+import number_results from "../assets/number_results";
+
+
 import {
   required,
   minLength,
@@ -153,18 +156,19 @@ export default {
         cuisine: null,
         diet: null,
         intolerance: null,
-        results_num: 5,
+        number_of_results: 5,
         email: "",
         submitError: undefined
       },
       cuisines: [{ value: null, text: "", disabled: true }],
       diet: [{ value: null, text: "", disabled: true }],
       intolerance: [{ value: null, text: "", disabled: true }],
-      results_num: [{ value: 5, text: "", disabled: true }],
+      number_results: [{ value: 5, text: "", disabled: true }],
       errors: [],
       validated: false,
       showSearchResults: false,
-      searchParamas: {}
+      searchParamas: {},
+      stam: "lalal"
     };
   },
   
@@ -182,7 +186,7 @@ export default {
       cuisine: {},
       diet: {},
       intolerance:{},
-      results_num:{}
+      number_of_results:{}
     }
   },
   mounted() {
@@ -190,7 +194,7 @@ export default {
     this.cuisines.push(...cuisines);
     this.diet.push(...diet);
     this.intolerance.push(...intolerance);
-    this.results_num.push(...results_num);
+    this.number_results.push(...number_results);
 
 
     // console.log($v);
@@ -215,9 +219,11 @@ export default {
         if (this.form.intolerance != null){
           this.searchParamas["intolerance"] = this.form.intolerance;
         }
-        if (this.form.results_num != null){
-          this.searchParamas["results_num"] = this.form.results_num;
+        if (this.form.number_of_results != null){
+          console.log("number_of_results"+ this.form.number_of_results)
+          this.searchParamas["number_of_results"] = this.form.number_of_results;
         }
+          console.log("this.searchParamas"+ this.searchParamas)
 
         this.showSearchResults = true;
       } catch (err) {

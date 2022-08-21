@@ -54,6 +54,8 @@ export default {
         ///if (previusRandom.length === 0){
           let response;
           if (this.queryParams){
+          console.log("this.queryParams" +this.queryParams);
+
           response = await this.axios.get(
           this.queryString /*,{withCredentials:true}*/
           , this.queryParams
